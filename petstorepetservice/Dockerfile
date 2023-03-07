@@ -5,6 +5,7 @@ FROM maven:3.8.4-openjdk-17-slim AS build
 WORKDIR /build
 COPY . /build/petstorepetservice
 RUN mv /build/petstorepetservice/pom_root.xml /build/pom.xml
+RUN sed -i 's/localhost/host.docker.internal/g' /build/petstorepetservice/src/main/resources/application.yml
 RUN mvn clean install
 
 #
