@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+
+  web:
+    build: petstoreapp/.
+    ports:
+      - "8080:8080"
+
+  petstoreorderservice:
+    build: petstoreorderservice/.
+    ports:
+      - "8083:8083"
+
+  petstorepetservice:
+    build: petstorepetservice/.
+    ports:
+      - "8081:8081"
+
+  petstoreproductservice:
+    build: petstoreproductservice/.
+    ports:
+      - "8082:8082"
