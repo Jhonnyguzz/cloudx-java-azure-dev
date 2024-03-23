@@ -2,6 +2,11 @@ package com.chtrembl.petstore.product.model;
 
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,9 +18,12 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-20T15:31:39.272-05:00")
-
+@Entity
+@Table(name = "tag")
 public class Tag {
 	@JsonProperty("id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id = null;
 
 	@JsonProperty("name")

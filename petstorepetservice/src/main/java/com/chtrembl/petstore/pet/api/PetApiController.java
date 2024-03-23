@@ -1,10 +1,13 @@
 package com.chtrembl.petstore.pet.api;
 
+import com.chtrembl.petstore.pet.repository.PetRepository;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -51,6 +54,9 @@ public class PetApiController implements PetApi {
 	@Autowired
 	private DataPreload dataPreload;
 
+	@Autowired
+	private PetRepository petRepository;
+
 	@Override
 	public DataPreload getBeanToBeAutowired() {
 		return dataPreload;
@@ -60,6 +66,21 @@ public class PetApiController implements PetApi {
 	public PetApiController(ObjectMapper objectMapper, NativeWebRequest request) {
 		this.objectMapper = objectMapper;
 		this.request = request;
+	}
+
+	//Module 6
+	@Override
+	public List<Pet> getPreloadedPets() {
+		//Module 6: Try to load from DB. Otherwise, preload date
+		try {
+			log.info("Attempting to load from DB");
+			return StreamSupport.stream(petRepository.findAll().spliterator(), false)
+							.collect(Collectors.toList());
+			//throw new RuntimeException();
+		} catch(Exception e) {
+			log.warn("Failed to load from DB. Sending preload data");
+			return getBeanToBeAutowired().getPets();
+		}
 	}
 
 	// should really be in an interceptor

@@ -1,10 +1,13 @@
 package com.chtrembl.petstore.product.api;
 
+import com.chtrembl.petstore.product.repository.ProductRepository;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -52,6 +55,9 @@ public class ProductApiController implements ProductApi {
 	@Autowired
 	private DataPreload dataPreload;
 
+	@Autowired
+	private ProductRepository productRepository;
+
 	@Override
 	public DataPreload getBeanToBeAutowired() {
 		return dataPreload;
@@ -61,6 +67,21 @@ public class ProductApiController implements ProductApi {
 	public ProductApiController(ObjectMapper objectMapper, NativeWebRequest request) {
 		this.objectMapper = objectMapper;
 		this.request = request;
+	}
+
+	//Module 6
+	@Override
+	public List<Product> getPreloadedProducts() {
+		//Module 6: Try to load from DB. Otherwise, preload date
+		try {
+			log.info("Attempting to load from DB");
+			return StreamSupport.stream(productRepository.findAll().spliterator(), false)
+					.collect(Collectors.toList());
+			//throw new RuntimeException();
+		} catch(Exception e) {
+			log.warn("Failed to load from DB. Sending preload data");
+			return getBeanToBeAutowired().getProducts();
+		}
 	}
 
 	// should really be in an interceptor

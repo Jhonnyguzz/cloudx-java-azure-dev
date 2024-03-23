@@ -1,9 +1,24 @@
 package com.chtrembl.petstore.pet.model;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -20,12 +35,16 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-20T15:31:39.272-05:00")
-
+@Entity
+@Table(name = "pet", schema = "public")
 public class Pet {
 	@JsonProperty("id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@JsonProperty("category")
+	@OneToOne
 	private Category category;
 
 	@JsonProperty("name")
@@ -37,6 +56,10 @@ public class Pet {
 
 	@JsonProperty("tags")
 	@Valid
+	@JoinTable(name="pet_tag",
+			joinColumns={@JoinColumn(name="pet_id")},
+			inverseJoinColumns={@JoinColumn(name="tag_id")})
+	@ElementCollection(fetch = FetchType.EAGER)
 	private List<Tag> tags = null;
 
 	/**
@@ -77,6 +100,8 @@ public class Pet {
 	}
 
 	@JsonProperty("status")
+	@Column(columnDefinition = "VARCHAR(64)")
+	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
 
 	public Pet id(Long id) {
