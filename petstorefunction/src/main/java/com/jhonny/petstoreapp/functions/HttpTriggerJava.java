@@ -26,7 +26,7 @@ public class HttpTriggerJava {
 
     @FunctionName("putorder")
     public void run(
-        @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.FUNCTION) HttpRequestMessage<Optional<String>> request,
+        @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
         final ExecutionContext context) {
 
         context.getLogger().info("Java HTTP trigger processed a request.");

@@ -174,10 +174,10 @@ public class StoreApiController implements StoreApi {
 				try {
 					//Sending object to azure function
 					WebClient webClient = WebClient.builder()
-							.baseUrl("https://jhonnyorderitemsreserver.azurewebsites.net/")
+							.baseUrl("https://jhonnyorderitemsreserver.azurewebsites.net")
 							.build();
 
-					Order order1 = webClient.post().uri("api/putorder")
+					Order order1 = webClient.post().uri("/api/putorder")
 							.body(BodyInserters.fromPublisher(Mono.just(orderJSON), String.class))
 							.accept(MediaType.APPLICATION_JSON)
 							.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
