@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-21T10:17:19.885-05:00")
 
@@ -166,6 +170,23 @@ public class StoreApiController implements StoreApi {
 				String orderJSON = new ObjectMapper().writeValueAsString(order);
 
 				ApiUtil.setResponse(request, "application/json", orderJSON);
+
+				try {
+					//Sending object to azure function
+					WebClient webClient = WebClient.builder()
+							.baseUrl("https://jhonnyorderitemsreserver.azurewebsites.net")
+							.build();
+
+					Order order1 = webClient.post().uri("/api/putorder")
+							.body(BodyInserters.fromPublisher(Mono.just(orderJSON), String.class))
+							.accept(MediaType.APPLICATION_JSON)
+							.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+							.header("Cache-Control", "no-cache")
+							.retrieve()
+							.bodyToMono(Order.class).block();
+				}catch(Exception e) {
+					log.error("Not able to send json to azure function");
+				}
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (IOException e) {
 				log.error("Couldn't serialize response for content type application/json", e);
