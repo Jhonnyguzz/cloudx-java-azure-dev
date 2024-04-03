@@ -175,5 +175,11 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-cosmos</artifactId>
+			<version>4.43.0</version>
+		</dependency>
+
 	</dependencies>
 </project>

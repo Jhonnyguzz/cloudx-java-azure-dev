@@ -1,5 +1,6 @@
 package com.chtrembl.petstore.order.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class Order implements Serializable {
 	@JsonProperty("tags")
 	@Valid
 	private List<Tag> tags = null;
+
+	private String partitionKey;
 
 	/**
 	 * Order Status
@@ -216,7 +219,7 @@ public class Order implements Serializable {
 
 	/**
 	 * Get complete
-	 * 
+	 *
 	 * @return complete
 	 **/
 	@ApiModelProperty(value = "")
@@ -227,6 +230,21 @@ public class Order implements Serializable {
 
 	public void setComplete(Boolean complete) {
 		this.complete = complete;
+	}
+
+	//Module 6:
+
+	public Order partitionKey(String partitionKey) {
+		this.partitionKey = partitionKey;
+		return this;
+	}
+
+	public String getPartitionKey() {
+		return partitionKey;
+	}
+
+	public void setPartitionKey(String partitionKey) {
+		this.partitionKey = partitionKey;
 	}
 
 	@Override
