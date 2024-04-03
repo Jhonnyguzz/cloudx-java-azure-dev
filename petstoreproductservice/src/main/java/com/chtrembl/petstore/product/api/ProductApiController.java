@@ -55,7 +55,7 @@ public class ProductApiController implements ProductApi {
 	@Autowired
 	private DataPreload dataPreload;
 
-	@Autowired
+	@Autowired(required = false)
 	private ProductRepository productRepository;
 
 	@Override

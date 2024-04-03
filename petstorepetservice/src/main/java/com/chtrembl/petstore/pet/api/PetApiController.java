@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,7 @@ public class PetApiController implements PetApi {
 	private final ObjectMapper objectMapper;
 
 	private final NativeWebRequest request;
+	private final ApplicationContext applicationContext;
 
 	@Autowired
 	private ContainerEnvironment containerEnvironment;
@@ -54,7 +56,7 @@ public class PetApiController implements PetApi {
 	@Autowired
 	private DataPreload dataPreload;
 
-	@Autowired
+	@Autowired(required = false)
 	private PetRepository petRepository;
 
 	@Override
@@ -62,10 +64,11 @@ public class PetApiController implements PetApi {
 		return dataPreload;
 	}
 
-	@org.springframework.beans.factory.annotation.Autowired
-	public PetApiController(ObjectMapper objectMapper, NativeWebRequest request) {
+	@Autowired
+	public PetApiController(ObjectMapper objectMapper, NativeWebRequest request, ApplicationContext applicationContext) {
 		this.objectMapper = objectMapper;
 		this.request = request;
+		this.applicationContext = applicationContext;
 	}
 
 	//Module 6
@@ -74,6 +77,7 @@ public class PetApiController implements PetApi {
 		//Module 6: Try to load from DB. Otherwise, preload date
 		try {
 			log.info("Attempting to load from DB");
+			//petRepository = applicationContext.getBean(PetRepository.class);
 			return StreamSupport.stream(petRepository.findAll().spliterator(), false)
 							.collect(Collectors.toList());
 			//throw new RuntimeException();
