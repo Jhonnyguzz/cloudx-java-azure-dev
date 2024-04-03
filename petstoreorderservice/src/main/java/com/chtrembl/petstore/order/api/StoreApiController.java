@@ -5,6 +5,7 @@ import com.chtrembl.petstore.order.model.Order;
 import com.chtrembl.petstore.order.model.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import io.swagger.configuration.CosmoDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -53,6 +54,9 @@ public class StoreApiController implements StoreApi {
 
 	@Autowired
 	private StoreApiCache storeApiCache;
+
+	@Autowired
+	private CosmoDB cosmoDB;
 
 	@Override
 	public StoreApiCache getBeanToBeAutowired() {
@@ -187,6 +191,16 @@ public class StoreApiController implements StoreApi {
 				}catch(Exception e) {
 					log.error("Not able to send json to azure function");
 				}
+
+				//Module 6
+				try {
+					cosmoDB.putOrderInAzureCosmoDB(order);
+				} catch (Exception e) {
+					log.error("Not able to send json to cosmoDB");
+				} finally {
+					cosmoDB.close();
+				}
+
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (IOException e) {
 				log.error("Couldn't serialize response for content type application/json", e);

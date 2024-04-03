@@ -11,3 +11,11 @@ Based on the similar course for .Net Devs: [CloudX Associate: MS Azure Developer
 5. `./modules/moduleN/TODO.md` - set of remaining tasks for a specific module
 6. `./modules/moduleN/deployment` - set of deployment automation scripts (either for Mentor convenience, or can be shared with Student)
 
+## TODO list
+- Update all dependencies
+- Fix Bug in cosmos db same order with same partitionKey
+
+## Useful links
+
+### Cosmos DB
+- [Explore Azure Cosmos DB](https://learn.microsoft.com/en-us/training/modules/explore-azure-cosmos-db/)

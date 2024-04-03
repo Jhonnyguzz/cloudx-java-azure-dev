@@ -5,13 +5,33 @@ springfoxdocumentation:
       
 server:
   port: ${PETSTOREPRODUCTSERVICE_SERVER_PORT:8082}
-  
+
+database:
+  enabled: false
 spring:
   application:
     name: petstoreproductservice
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  datasource:
+    url: ""
+    username: ""
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: INFO
 
 management:
   endpoints:
