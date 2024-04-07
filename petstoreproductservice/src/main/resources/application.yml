@@ -44,7 +44,15 @@ management:
   endpoint:
     httptrace:
       enabled: true
-    
+
+petstore:
+  vault:
+    managed-identity-client-id: ""
+    vault-name: ""
+    url-name: ""
+    username-name: ""
+    password-name: ""
+
 data:
   products:
     - id: 1
