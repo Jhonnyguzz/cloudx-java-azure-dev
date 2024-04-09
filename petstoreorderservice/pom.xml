@@ -181,5 +181,12 @@
 			<version>4.43.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.azure/azure-messaging-servicebus -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-messaging-servicebus</artifactId>
+			<version>7.15.2</version>
+		</dependency>
+
 	</dependencies>
 </project>

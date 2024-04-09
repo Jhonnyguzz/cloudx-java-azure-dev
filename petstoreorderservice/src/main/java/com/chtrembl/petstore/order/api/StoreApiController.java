@@ -1,11 +1,15 @@
 package com.chtrembl.petstore.order.api;
 
+import com.azure.messaging.servicebus.ServiceBusClientBuilder;
+import com.azure.messaging.servicebus.ServiceBusMessage;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.chtrembl.petstore.order.model.ContainerEnvironment;
 import com.chtrembl.petstore.order.model.Order;
 import com.chtrembl.petstore.order.model.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import io.swagger.configuration.CosmoDB;
+import io.swagger.configuration.MessageBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -57,6 +61,9 @@ public class StoreApiController implements StoreApi {
 
 	@Autowired
 	private CosmoDB cosmoDB;
+
+	@Autowired
+	private MessageBus messageBus;
 
 	@Override
 	public StoreApiCache getBeanToBeAutowired() {
@@ -199,6 +206,15 @@ public class StoreApiController implements StoreApi {
 					log.error("Not able to send json to cosmoDB");
 				} finally {
 					cosmoDB.close();
+				}
+
+				//Module 8
+				try {
+					messageBus.putOrderInServiceBus(orderJSON);
+				} catch (Exception e) {
+					log.error("Not able to send message to service bus");
+				} finally {
+					messageBus.close();
 				}
 
 				return new ResponseEntity<>(HttpStatus.OK);

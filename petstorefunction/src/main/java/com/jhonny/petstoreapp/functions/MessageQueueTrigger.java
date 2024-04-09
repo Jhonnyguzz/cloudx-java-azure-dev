@@ -2,41 +2,32 @@ package com.jhonny.petstoreapp.functions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.functions.annotation.*;
+import com.microsoft.azure.functions.*;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import java.util.*;
-import com.microsoft.azure.functions.annotation.*;
-import com.microsoft.azure.functions.*;
 
 /**
- * Azure Functions with HTTP Trigger.
+ * Azure Functions with Service Bus Trigger.
  */
-public class HttpTriggerJava {
+public class MessageQueueTrigger {
     /**
-     * This function listens at endpoint "/api/HttpTriggerJava". Two ways to invoke it using "curl" command in bash:
-     * 1. curl -d "HTTP Body" {your host}/api/HttpTriggerJava
-     * 2. curl {your host}/api/HttpTriggerJava?name=HTTP%20Query
+     * This function will be invoked when a new message is received at the Service Bus Queue.
      */
-
-    @FunctionName("putorder")
+    @FunctionName("putOrderByMessageQueue")
     public void run(
-        @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
-        final ExecutionContext context) {
+            @ServiceBusQueueTrigger(name = "message", queueName = "jhonnypetqueue", connection = "MessageBusStringConnection") String message,
+            final ExecutionContext context
+    ) {
+        context.getLogger().info("Java Service Bus Queue trigger function executed.");
+        context.getLogger().info(message);
 
-        context.getLogger().info("Java HTTP trigger processed a request.");
-
-        // Obtener el cuerpo de la solicitud HTTP
-        String requestBody = request.getBody().orElse(null);
-
-        if (requestBody != null && !requestBody.isEmpty()) {
+        if (!message.isEmpty()) {
             try {
-                // Convertir el cuerpo de la solicitud a un objeto JSON
-                //ObjectMapper objectMapper = new ObjectMapper();
-                //Order order = objectMapper.readValue(requestBody, Order.class);
                 ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode = objectMapper.readTree(requestBody);
+                JsonNode jsonNode = objectMapper.readTree(message);
                 System.err.println(jsonNode);
                 String id = jsonNode.get("id").asText();
 
@@ -56,9 +47,7 @@ public class HttpTriggerJava {
 
                 // Guardar el objeto en el Blob Storage
                 CloudBlockBlob blockBlob = container.getBlockBlobReference(blobName);
-                blockBlob.uploadText(requestBody);
-                //blockBlob.uploadFromByteArray(data, 0, data.length);
-
+                blockBlob.uploadText(message);
                 context.getLogger().info("Object saved to Blob Storage as " + blobName);
             } catch (Exception e) {
                 context.getLogger().warning("Error saving object to Blob Storage: " + e.getMessage());
