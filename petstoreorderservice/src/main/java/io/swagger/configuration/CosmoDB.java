@@ -6,7 +6,6 @@ import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.CosmosContainer;
 import com.azure.cosmos.CosmosDatabase;
 import com.azure.cosmos.CosmosException;
-import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
 import com.azure.cosmos.models.CosmosContainerProperties;
 import com.azure.cosmos.models.CosmosContainerResponse;
 import com.azure.cosmos.models.CosmosDatabaseResponse;
@@ -18,40 +17,40 @@ import com.chtrembl.petstore.order.model.Order;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CosmoDB {
 
   static final Logger log = LoggerFactory.getLogger(CosmoDB.class);
-  private final String databaseName = "Petstoreapp";
-  private final String containerName = "Orders";
+
+  @Value("${azure.cosmodb.host}")
+  private String host;
+
+  @Value("${azure.cosmodb.master-key}")
+  private String masterKey;
+
+  @Value("${azure.cosmodb.database-name}")
+  private String databaseName;
+
+  @Value("${azure.cosmodb.container-name}")
+  private String containerName;
+
   private CosmosClient client;
   private CosmosDatabase database;
   private CosmosContainer container;
 
-  public static String MASTER_KEY =
-      System.getProperty("ACCOUNT_KEY",
-          StringUtils.defaultString(StringUtils.trimToNull(
-                  System.getenv().get("ACCOUNT_KEY")),
-              ""));
-
-  public static String HOST =
-      System.getProperty("ACCOUNT_HOST",
-          StringUtils.defaultString(StringUtils.trimToNull(
-                  System.getenv().get("ACCOUNT_HOST")),
-              ""));
-
   public void putOrderInAzureCosmoDB(Order order) throws Exception {
-    System.out.println("Using Azure Cosmos DB endpoint: " + HOST);
+    System.out.println("Using Azure Cosmos DB endpoint: " + host);
 
     ArrayList<String> preferredRegions = new ArrayList<>();
     preferredRegions.add("West US");
 
     //  Create sync client
     client = new CosmosClientBuilder()
-        .endpoint(HOST)
-        .key(MASTER_KEY)
+        .endpoint(host)
+        .key(masterKey)
         .preferredRegions(preferredRegions)
         .userAgentSuffix("CosmosDBJavaQuickstart")
         .consistencyLevel(ConsistencyLevel.EVENTUAL)
@@ -119,11 +118,13 @@ public class CosmoDB {
       log.info("Request charge: {}", item.getRequestCharge());
       log.info("Item duration: {}", item.getDuration());
     }catch(Exception e) {
-      e.printStackTrace();
+      log.error("Not able to create order in cosmodb {}", e.getMessage());
     }
   }
 
   public void close() {
-    client.close();
+    if (client != null) {
+      client.close();
+    }
   }
 }

@@ -212,6 +212,7 @@ public class StoreApiController implements StoreApi {
 				try {
 					messageBus.putOrderInServiceBus(orderJSON);
 				} catch (Exception e) {
+					log.error(e.getMessage());
 					log.error("Not able to send message to service bus");
 				} finally {
 					messageBus.close();

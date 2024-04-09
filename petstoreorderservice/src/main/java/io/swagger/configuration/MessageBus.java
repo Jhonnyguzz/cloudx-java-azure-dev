@@ -3,13 +3,18 @@ package io.swagger.configuration;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageBus {
 
-  private final String connectionString = "";
-  private final String queueName = "";
+  @Value("${azure.messagebus.connection-string}")
+  private String connectionString;
+
+  @Value("${azure.messagebus.queue-name}")
+  private String queueName;
+
   private ServiceBusSenderClient senderClient;
 
   public void putOrderInServiceBus(String orderJson) {
@@ -24,7 +29,9 @@ public class MessageBus {
   }
 
   public void close() {
-    senderClient.close();
+    if(senderClient != null) {
+      senderClient.close();
+    }
   }
 
 }
