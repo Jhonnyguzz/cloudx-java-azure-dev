@@ -18,6 +18,16 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+azure:
+  cosmodb:
+    host: ""
+    master-key: ""
+    database-name: "Petstoreapp"
+    container-name: "Orders"
+  messagebus:
+    connection-string: ""
+    queue-name: "jhonnypetqueue"
+
 management:
   endpoints:
     web:
