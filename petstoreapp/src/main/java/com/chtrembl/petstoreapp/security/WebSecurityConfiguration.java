@@ -10,9 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import com.chtrembl.petstoreapp.model.ContainerEnvironment;
 
-/**
- * Wire up Spring Security
- */
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(WebSecurityConfiguration.class);
@@ -28,7 +25,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		if (this.aadB2COidcLoginConfigurerWrapper != null
 				&& this.aadB2COidcLoginConfigurerWrapper.getConfigurer() != null) {
 			web.ignoring().antMatchers("/content/**");
-			web.ignoring().antMatchers("/.well-known/**");
 		}
 	}
 
@@ -38,26 +34,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		if (this.aadB2COidcLoginConfigurerWrapper != null
 				&& this.aadB2COidcLoginConfigurerWrapper.getConfigurer() != null) {
 
-			http.csrf().ignoringAntMatchers("/signalr/**").and().authorizeRequests().antMatchers("/")
-					.permitAll()
-					.antMatchers("/*breed*").permitAll()
-					.antMatchers("/*product*").permitAll()
-					.antMatchers("/*cart*").permitAll()
-					.antMatchers("/api/contactus").permitAll()
-					.antMatchers("/slowness").permitAll()
-					.antMatchers("/exception").permitAll()
-					.antMatchers("/introspectionSimulation*").permitAll()
-					.antMatchers("/bingSearch*").permitAll()
-					.antMatchers("/signalr/negotiate").permitAll()
-					.antMatchers("/signalr/test").permitAll()
-					.antMatchers("/login*").permitAll().anyRequest()
-					.authenticated().and().apply(this.aadB2COidcLoginConfigurerWrapper.getConfigurer()).and()
-					.oauth2Login().loginPage("/login");
+			//antMatchers("/dogbreed*").permitAll() //Adding after login matcher
+
+			http.authorizeRequests()
+					.antMatchers("/login").permitAll()
+					.anyRequest().authenticated()
+					.and()
+					.apply(this.aadB2COidcLoginConfigurerWrapper.getConfigurer())
+					.and().oauth2Login().loginPage("/login")
+					.and().csrf().disable();
 
 			this.containeEnvironment.setSecurityEnabled(true);
 		} else {
 			logger.warn(
-					"azure.activedirectory.b2c.tenant, azure.activedirectory.b2c.client-id, azure.activedirectory.b2c.client-secret and azure.activedirectory.b2c.logout-success-url must be set for Azure B2C Authentication to be enabled, considering configuring Azure B2C App Registration if you would like to authenticate users.");
+					"azure.activedirectory.b2c.base-uri, azure.activedirectory.b2c.client-id, azure.activedirectory.b2c.client-secret and azure.activedirectory.b2c.logout-success-url must be set for Azure B2C Authentication to be enabled, considering configuring Azure B2C App Registration if you would like to authenticate users.");
 		}
 	}
 }

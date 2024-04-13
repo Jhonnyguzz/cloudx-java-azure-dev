@@ -7,7 +7,7 @@ server:
   port: ${PETSTOREPETSERVICE_SERVER_PORT:8081}
 
 database:
-  enabled: false
+  enabled: ${DATABASE_ENABLED:false}
 spring:
   application:
     name: petstorepetservice
@@ -15,9 +15,9 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   datasource:
-    url: ""
-    username: ""
-    password: ""
+    url: ${PETSTOREPETSERVICE_DB_URL}
+    username: ${PETSTOREPETSERVICE_USERNAME_URL}
+    password: ${PETSTOREPETSERVICE_PASSWORD_URL}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -47,11 +47,11 @@ management:
 
 petstore:
   vault:
-    managed-identity-client-id: ""
-    vault-name: ""
-    url-name: ""
-    username-name: ""
-    password-name: ""
+    managed-identity-client-id: "${MANAGE_IDENTITY_CLIENT_ID:null-object-id}"
+    vault-name: "${VAULT_NAME: jhonnypetkeyvault}"
+    url-name: "${URL_NAME:url-pet-name}"
+    username-name: "${USERNAME_NAME:username-name}"
+    password-name: "${PASSWORD_NAME:password-name}"
 
 data:
   pets:

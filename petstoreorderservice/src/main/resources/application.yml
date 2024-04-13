@@ -20,12 +20,12 @@ spring:
 
 azure:
   cosmodb:
-    host: ""
-    master-key: ""
+    host: "${COSMODB_URL:null}"
+    master-key: "${COSMODB_MASTER_KEY:null}"
     database-name: "Petstoreapp"
     container-name: "Orders"
   messagebus:
-    connection-string: ""
+    connection-string: "${CONNECTION_STRING_BUS:null}"
     queue-name: "jhonnypetqueue"
 
 management:

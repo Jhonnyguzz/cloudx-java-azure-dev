@@ -1,5 +1,6 @@
 package com.chtrembl.petstoreapp.controller;
 
+import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -80,6 +80,8 @@ public class WebAppController {
 		// put session in TTL cache to refresh TTL
 		caffeineCache.put(this.sessionUser.getSessionId(), this.sessionUser.getName());
 
+		logger.info("Token details: {}", token);
+
 		if (token != null) {
 			final OAuth2User user = token.getPrincipal();
 
@@ -91,7 +93,7 @@ public class WebAppController {
 			}
 
 			// this should really be done in the authentication/pre auth flow....
-			this.sessionUser.setName((String) user.getAttributes().get("name"));
+			this.sessionUser.setName((String) user.getAttributes().get("given_name"));
 
 			if (!this.sessionUser.isInitialTelemetryRecorded()) {
 				this.sessionUser.getTelemetryClient().trackEvent(
@@ -104,6 +106,8 @@ public class WebAppController {
 			model.addAttribute("claims", user.getAttributes());
 			model.addAttribute("user", this.sessionUser.getName());
 			model.addAttribute("grant_type", user.getAuthorities());
+
+			logger.info("User details: {}", user);
 		}
 
 		model.addAttribute("userName", this.sessionUser.getName());

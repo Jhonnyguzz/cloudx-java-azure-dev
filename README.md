@@ -13,9 +13,10 @@ Based on the similar course for .Net Devs: [CloudX Associate: MS Azure Developer
 
 ## TODO list
 - Update all dependencies
-- Fix Bug in cosmos db same order with same partitionKey
 
 ## Useful links
+- [Original project and its documentation](https://github.com/chtrembl/azure-cloud?tab=readme-ov-file)
+- [MSAL Examples](https://github.com/Azure-Samples/ms-identity-msal-java-samples)
 
 ### Cosmos DB
 - [Explore Azure Cosmos DB](https://learn.microsoft.com/en-us/training/modules/explore-azure-cosmos-db/)

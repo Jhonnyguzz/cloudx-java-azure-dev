@@ -117,8 +117,16 @@ public class CosmoDB {
           new CosmosItemRequestOptions());
       log.info("Request charge: {}", item.getRequestCharge());
       log.info("Item duration: {}", item.getDuration());
-    }catch(Exception e) {
-      log.error("Not able to create order in cosmodb {}", e.getMessage());
+    }catch(CosmosException e) {
+      if (e.getStatusCode() == 409) {
+        CosmosItemResponse<Order> item = container.replaceItem(order, order.getId(), new PartitionKey(order.getId()),
+            new CosmosItemRequestOptions());
+        log.info("Request charge: {}", item.getRequestCharge());
+        log.info("Item duration: {}", item.getDuration());
+        log.info("Element replaced successfully.");
+      } else {
+        log.warn("Not able to create order in cosmodb {}", e.getMessage());
+      }
     }
   }
 

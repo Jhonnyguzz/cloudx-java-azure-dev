@@ -2,10 +2,10 @@ package com.chtrembl.petstoreapp.model;
 
 import ch.qos.logback.core.joran.spi.JoranException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
